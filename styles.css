@@ -1,0 +1,6 @@
+#woocommerce-product-data ul.product_data_tabs li.course_tab img {
+    margin-right:7px;
+}
+#woocommerce-product-data ul.product_data_tabs li.course_tab.active a {
+    width:auto !important;
+}
