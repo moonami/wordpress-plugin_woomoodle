@@ -113,7 +113,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
                 <dl class="course_details">
                     <?php 
                     $content = 'Enter your course: ';
-                    $content .= wpmdl_handler("", "[wpmdl $attributes]Click Here![/wpmdl]");
+                    $content .= moologin_handler("", "[moologin $attributes]Click Here![/moologin]");
                     echo $content;
                     ?>
                 </dl>
