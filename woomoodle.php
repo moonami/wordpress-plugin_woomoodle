@@ -85,47 +85,39 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
     add_action('woocommerce_process_product_meta', 'process_product_meta_course_tab');
 
     /*
-     * Add Course details to order details
+     * Access course after prodcut title
      */
-    function course_details_order_details($order) {
+    function order_details_access_course($html, $item) {
         global $post, $wpdb;
-        ?>
-        <?php
-        if ($order->status == 'completed') {
-            $order_meta = new WC_Order();
-            $order_item = $wpdb->get_row($wpdb->prepare("SELECT order_item_id FROM {$wpdb->prefix}woocommerce_order_items WHERE order_id = %s", $order->id));
-            $product_id = $order_meta->get_item_meta($order_item->order_item_id, '_product_id', true);
-            $course_link_active = get_post_meta($product_id, 'course_link_active', true);            
-            if ($course_link_active == 'yes') {
-                $cohort_id = get_post_meta($product_id, 'course_cohort_id', true);
-                $course_id = get_post_meta($product_id, 'course_id', true);
-                $attributes = "";
-                if (!empty($cohort_id)) {
-                    $attributes .= "cohort='$product_id'"; 
+
+        if (isset($_GET['order'])) {
+            $order = new WC_Order();
+            $order->get_order($_GET['order']);            
+            if ($order->status == 'completed') {
+                $product_id = $item['product_id'];
+                $course_link_active = get_post_meta($product_id, 'course_link_active', true);
+                if ($course_link_active == 'yes') {
+                    $cohort_id = get_post_meta($product_id, 'course_cohort_id', true);
+                    $course_id = get_post_meta($product_id, 'course_id', true);
+                    $attributes = array('target' => '_blank');
+                    if (!empty($cohort_id)) {
+                        $attributes['cohort'] = $product_id; 
+                    }
+                    if (!empty($course_id)) {
+                        $attributes['courseid'] = $course_id;
+                    }
+                    $course_link = ' ( '.moologin_handler($attributes, "Access course!").' )';
+                    return $html.$course_link;
+                } else {
+                    return $html;
                 }
-                if (!empty($course_id)) {
-                    $attributes .= "courseid='$course_id'";
-                }
-                ?>
-                <header>
-                    <h2><?php _e( 'Course details' ); ?></h2>
-                </header>
-                <dl class="course_details">
-                    <?php 
-                    $content = 'Enter your course: ';
-                    $content .= moologin_handler("", "[moologin $attributes]Click Here![/moologin]");
-                    echo $content;
-                    ?>
-                </dl>
-                <?php
+            } else {
+                return $html;
             }
-        }            
-        ?>
-        </dl>
-        <?php
+        }
+        return $html;
     }
-    add_action('woocommerce_order_details_after_order_table', 'course_details_order_details');
-    
+    add_filter('woocommerce_order_table_product_title', 'order_details_access_course', 10, 2);
 }
 
 ?>
