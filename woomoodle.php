@@ -89,14 +89,17 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
      */
     function order_details_access_course($html, $item) {
         global $post, $wpdb;
-
-        if (isset($_GET['order'])) {
+        
+        $orderid = (isset($_GET['view-order']) ? $_GET['view-order'] : $_GET['order']);
+        
+        if (!empty($orderid)) {
             $order = new WC_Order();
-            $order->get_order($_GET['order']);            
+            $order->get_order($orderid);
             if ($order->status == 'completed') {
                 $product_id = $item['product_id'];
+                
                 $course_link_active = get_post_meta($product_id, 'course_link_active', true);
-                if ($course_link_active == 'yes') {
+                if ($course_link_active == 'yes') {                    
                     $cohort_id = get_post_meta($product_id, 'course_cohort_id', true);
                     $course_id = get_post_meta($product_id, 'course_id', true);
                     $attributes = array('target' => '_blank');
@@ -117,7 +120,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
         }
         return $html;
     }
-    add_filter('woocommerce_order_table_product_title', 'order_details_access_course', 10, 2);
+    add_filter('woocommerce_order_item_name', 'order_details_access_course', 10, 2);
 }
 
 ?>
