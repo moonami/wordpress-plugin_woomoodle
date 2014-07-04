@@ -90,7 +90,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
     function order_details_access_course($html, $item) {
         global $post, $wpdb;
         
-        $orderid = (isset($_GET['view-order']) ? $_GET['view-order'] : $_GET['order']);
+        $orderid = (isset($_GET['order-received']) ? $_GET['order-received'] : isset($_GET['view-order']) ? $_GET['view-order'] : $_GET['order']);
         
         if (!empty($orderid)) {
             $order = new WC_Order();
