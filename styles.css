@@ -4,3 +4,6 @@
 #woocommerce-product-data ul.product_data_tabs li.course_tab.active a {
     width:auto !important;
 }
+#woocommerce-product-data ul.product_data_tabs li.course_tab a:before {
+    display:none;
+}
